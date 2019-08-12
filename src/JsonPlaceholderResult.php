@@ -35,8 +35,10 @@ abstract class JsonPlaceholderResult
      * @param HttpResponse $httpResponse
      * @param Model $prototypeModel
      */
-    public function __construct(HttpResponse $httpResponse, Model $prototypeModel)
-    {
+    public function __construct(
+        HttpResponse $httpResponse,
+        Model $prototypeModel
+    ) {
         $this->httpResponse = $httpResponse;
         $this->modelFactory = new ModelFactory($prototypeModel);
 

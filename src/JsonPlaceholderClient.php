@@ -117,8 +117,11 @@ abstract class JsonPlaceholderClient
      * @param $value
      * @return ModelResult
      */
-    public function setAttribute(int $resourceId, string $attribute, $value): ModelResult
-    {
+    public function setAttribute(
+        int $resourceId,
+        string $attribute,
+        $value
+    ): ModelResult {
         $postFields = json_encode([
             $attribute => $value,
         ]);
