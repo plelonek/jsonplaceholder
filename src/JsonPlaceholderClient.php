@@ -30,7 +30,7 @@ abstract class JsonPlaceholderClient
 
         $this->http = new HttpClient(
             self::API_BASE_URI . $this->prototypeModel->getUri(),
-            ['content-type: application/json']
+            ['Content-type: application/json; charset=UTF-8']
         );
     }
 
