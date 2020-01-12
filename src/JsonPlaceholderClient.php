@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Plelonek\JsonPlaceholder;
 
 use Plelonek\JsonPlaceholder\Http\FilteredUri;
@@ -22,7 +24,7 @@ abstract class JsonPlaceholderClient
     protected $http;
 
     /**
-     * PlaceholderClient constructor.
+     * JsonPlaceholderClient constructor.
      */
     public function __construct()
     {
@@ -35,12 +37,8 @@ abstract class JsonPlaceholderClient
     }
 
     /**
-     * @return Model
-     */
-    abstract protected function getPrototypeModel(): Model;
-
-    /**
      * @param array $filters
+     *
      * @return CollectionResult
      */
     public function getAll(array $filters = []): CollectionResult
@@ -54,12 +52,13 @@ abstract class JsonPlaceholderClient
 
     /**
      * @param int $resourceId
+     *
      * @return ModelResult
      */
     public function get(int $resourceId): ModelResult
     {
         $httpResponse = $this->http->get(
-            new SimpleUri("/$resourceId")
+            new SimpleUri("/${resourceId}")
         );
 
         return new ModelResult($httpResponse, $this->prototypeModel);
@@ -67,6 +66,7 @@ abstract class JsonPlaceholderClient
 
     /**
      * @param array $attributes
+     *
      * @return ModelResult
      */
     public function create(array $attributes): ModelResult
@@ -84,6 +84,7 @@ abstract class JsonPlaceholderClient
     /**
      * @param int $resourceId
      * @param array $attributes
+     *
      * @return ModelResult
      */
     public function update(int $resourceId, array $attributes): ModelResult
@@ -91,7 +92,7 @@ abstract class JsonPlaceholderClient
         $attributes = $this->prototypeModel->getAllowedFillable($attributes);
 
         $httpResponse = $this->http->put(
-            new SimpleUri("/$resourceId"),
+            new SimpleUri("/${resourceId}"),
             json_encode($attributes)
         );
 
@@ -100,12 +101,13 @@ abstract class JsonPlaceholderClient
 
     /**
      * @param int $resourceId
+     *
      * @return ModelResult
      */
     public function delete(int $resourceId): ModelResult
     {
         $httpResponse = $this->http->delete(
-            new SimpleUri("/$resourceId")
+            new SimpleUri("/${resourceId}")
         );
 
         return new ModelResult($httpResponse, $this->prototypeModel);
@@ -115,6 +117,7 @@ abstract class JsonPlaceholderClient
      * @param int $resourceId
      * @param string $attribute
      * @param $value
+     *
      * @return ModelResult
      */
     public function setAttribute(
@@ -127,10 +130,15 @@ abstract class JsonPlaceholderClient
         ]);
 
         $httpResponse = $this->http->patch(
-            new SimpleUri("/$resourceId"),
+            new SimpleUri("/${resourceId}"),
             $postFields
         );
 
         return new ModelResult($httpResponse, $this->prototypeModel);
     }
+
+    /**
+     * @return Model
+     */
+    abstract protected function getPrototypeModel(): Model;
 }

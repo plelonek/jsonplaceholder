@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Plelonek\JsonPlaceholder\Http;
 
 class HttpResponse
@@ -15,10 +17,11 @@ class HttpResponse
     private $errorMessage;
 
     /**
-     * Response constructor.
+     * HttpResponse constructor.
+     *
      * @param string|null $rawBody
      */
-    public function __construct(string $rawBody = null)
+    public function __construct(?string $rawBody = null)
     {
         $this->rawBody = $rawBody;
     }

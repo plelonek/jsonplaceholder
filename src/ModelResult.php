@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Plelonek\JsonPlaceholder;
 
 use Plelonek\JsonPlaceholder\Models\Model;
@@ -12,6 +14,14 @@ class ModelResult extends JsonPlaceholderResult
     private $model;
 
     /**
+     * @return Model|null
+     */
+    public function getModel(): ?Model
+    {
+        return $this->model;
+    }
+
+    /**
      * @return void
      */
     protected function setResult(): void
@@ -19,13 +29,5 @@ class ModelResult extends JsonPlaceholderResult
         $this->model = $this->modelFactory->createModel(
             (array) $this->httpResponse->toJson()
         );
-    }
-
-    /**
-     * @return Model
-     */
-    public function getModel(): Model
-    {
-        return $this->model;
     }
 }

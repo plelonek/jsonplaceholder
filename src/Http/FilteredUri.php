@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Plelonek\JsonPlaceholder\Http;
 
 class FilteredUri extends Uri
@@ -38,16 +40,14 @@ class FilteredUri extends Uri
             return '/';
         }
 
-        $filteredUri = '';
+        $parameters = [];
 
         foreach ($this->filters as $attribute => $value) {
             if (in_array($attribute, $this->filterable, true)) {
-                $filteredUri .= "&$attribute=$value";
+                $parameters[$attribute] = $value;
             }
         }
 
-        $filteredUri[0] = '?';
-
-        return $filteredUri;
+        return '?'.http_build_query($parameters);
     }
 }

@@ -1,30 +1,29 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Plelonek\JsonPlaceholder;
 
 use Plelonek\JsonPlaceholder\Http\SimpleUri;
 use Plelonek\JsonPlaceholder\Models\Comment;
 use Plelonek\JsonPlaceholder\Models\Model;
 use Plelonek\JsonPlaceholder\Models\Post;
+use Plelonek\JsonPlaceholder\Tests\Feature\PostsClientTest;
 
+/**
+ * @see PostsClientTest
+ */
 class PostsClient extends JsonPlaceholderClient
 {
     /**
-     * @return Model
-     */
-    protected function getPrototypeModel(): Model
-    {
-        return new Post();
-    }
-
-    /**
      * @param int $postId
+     *
      * @return CollectionResult
      */
     public function getComments(int $postId): CollectionResult
     {
         $httpResponse = $this->http->get(
-            new SimpleUri("/$postId/comments")
+            new SimpleUri("/${postId}/comments")
         );
 
         return new CollectionResult($httpResponse, new Comment());
@@ -33,6 +32,7 @@ class PostsClient extends JsonPlaceholderClient
     /**
      * @param int $postId
      * @param int $userId
+     *
      * @return ModelResult
      */
     public function setUserId(int $postId, int $userId): ModelResult
@@ -43,6 +43,7 @@ class PostsClient extends JsonPlaceholderClient
     /**
      * @param int $postId
      * @param string $title
+     *
      * @return ModelResult
      */
     public function setTitle(int $postId, string $title): ModelResult
@@ -53,10 +54,19 @@ class PostsClient extends JsonPlaceholderClient
     /**
      * @param int $postId
      * @param string $body
+     *
      * @return ModelResult
      */
     public function setBody(int $postId, string $body): ModelResult
     {
         return $this->setAttribute($postId, 'body', $body);
+    }
+
+    /**
+     * @return Model
+     */
+    protected function getPrototypeModel(): Model
+    {
+        return new Post();
     }
 }

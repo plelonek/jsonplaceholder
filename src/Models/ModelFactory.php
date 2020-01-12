@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Plelonek\JsonPlaceholder\Models;
 
 use Plelonek\JsonPlaceholder\Collection;
@@ -21,6 +23,7 @@ class ModelFactory
 
     /**
      * @param  array  $attributes
+     *
      * @return Model|null
      */
     public function createModel(array $attributes): ?Model
@@ -37,6 +40,7 @@ class ModelFactory
 
     /**
      * @param  array  $items
+     *
      * @return Collection
      */
     public function createCollection(array $items): Collection

@@ -1,12 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Plelonek\JsonPlaceholder;
 
+use ArrayAccess;
 use ArrayIterator;
 use Countable;
 use IteratorAggregate;
 
-class Collection implements IteratorAggregate, Countable, Arrayable
+class Collection implements IteratorAggregate, Countable, Arrayable, ArrayAccess
 {
     /**
      * @var array
@@ -40,14 +43,6 @@ class Collection implements IteratorAggregate, Countable, Arrayable
     }
 
     /**
-     * @param  array  $items
-     */
-    public function setItems(array $items): void
-    {
-        $this->items = $items;
-    }
-
-    /**
      * @param $item
      */
     public function push($item): void
@@ -64,41 +59,63 @@ class Collection implements IteratorAggregate, Countable, Arrayable
     }
 
     /**
+     * Determine if an item exists at an offset.
+     *
+     * @param  mixed  $key
+     *
+     * @return bool
+     */
+    public function offsetExists($key): bool
+    {
+        return array_key_exists($key, $this->items);
+    }
+
+    /**
+     * Get an item at a given offset.
+     *
+     * @param  mixed  $key
+     *
+     * @return mixed
+     */
+    public function offsetGet($key)
+    {
+        return $this->items[$key];
+    }
+
+    /**
+     * Set the item at a given offset.
+     *
+     * @param  mixed  $key
+     * @param  mixed  $value
+     *
+     * @return void
+     */
+    public function offsetSet($key, $value): void
+    {
+        if ($key === null) {
+            $this->items[] = $value;
+        } else {
+            $this->items[$key] = $value;
+        }
+    }
+
+    /**
+     * Unset the item at a given offset.
+     *
+     * @param  string  $key
+     *
+     * @return void
+     */
+    public function offsetUnset($key): void
+    {
+        unset($this->items[$key]);
+    }
+
+    /**
      * @return array
      */
     public function toArray(): array
     {
-        $arrayCollection = [];
-
-        foreach ($this->items as $key => $item) {
-            if ($item instanceof Arrayable) {
-                $arrayCollection[] = $item->toArray();
-            } else {
-                $arrayCollection[$key] = $this->itemToArray($item);
-            }
-        }
-
-        return $arrayCollection;
-    }
-
-    /**
-     * @param $item
-     * @return mixed
-     */
-    private function itemToArray($item)
-    {
-        if (! is_object($item)) {
-            return $item;
-        }
-
-        $item = (array) $item;
-
-        foreach ($item as $key => $attribute) {
-            if (is_object($attribute)) {
-                $item[$key] = $this->itemToArray($attribute);
-            }
-        }
-
-        return $item;
+        return (new ArrayCollection($this))->getItems();
     }
 }

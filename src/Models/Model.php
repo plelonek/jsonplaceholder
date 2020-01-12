@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Plelonek\JsonPlaceholder\Models;
 
 use Plelonek\JsonPlaceholder\Arrayable;
@@ -38,6 +40,14 @@ abstract class Model implements Arrayable
     }
 
     /**
+     * @return void
+     */
+    public function __clone()
+    {
+        $this->attributes = new Collection();
+    }
+
+    /**
      * @return string
      */
     public function getUri(): string
@@ -54,7 +64,16 @@ abstract class Model implements Arrayable
     }
 
     /**
+     * @return array
+     */
+    public function getFillable(): array
+    {
+        return static::$fillable;
+    }
+
+    /**
      * @param array $attributes
+     *
      * @return array
      */
     public function getAllowedFillable(array $attributes): array
@@ -80,8 +99,9 @@ abstract class Model implements Arrayable
         $this->attributes = new Collection($attributes);
     }
 
-    /**1
+    /**
      * @param  string  $key
+     *
      * @return mixed|null
      */
     public function getAttribute(string $key)
@@ -99,13 +119,5 @@ abstract class Model implements Arrayable
     public function toArray(): array
     {
         return $this->attributes->toArray();
-    }
-
-    /**
-     * @return void
-     */
-    public function __clone()
-    {
-        $this->attributes = new Collection();
     }
 }

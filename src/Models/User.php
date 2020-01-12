@@ -4,24 +4,24 @@ declare(strict_types=1);
 
 namespace Plelonek\JsonPlaceholder\Models;
 
-class Post extends Model
+class User extends Model
 {
     /**
      * @var string
      */
-    protected static $uri = 'posts';
+    protected static $uri = 'users';
 
     /**
      * @var array
      */
     protected static $filterable = [
-        'id', 'userId', 'title',
+        'id', 'username', 'email', 'phone', 'website',
     ];
 
     /**
      * @var array
      */
     protected static $fillable = [
-        'userId', 'title', 'body',
+        'name', 'username', 'email', 'address', 'phone', 'website', 'company',
     ];
 }

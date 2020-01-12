@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Plelonek\JsonPlaceholder\Http;
 
 use Exception;
 
-class HttpClient implements HttpClientInterface
+class HttpClient implements IHttpClient
 {
     /**
      * @var string
@@ -17,7 +19,7 @@ class HttpClient implements HttpClientInterface
     protected $headers;
 
     /**
-     * RESTClient constructor.
+     * HttpClient constructor.
      *
      * @param string|null $baseUri
      * @param array $headers
@@ -31,72 +33,78 @@ class HttpClient implements HttpClientInterface
 
     /**
      * @param  Uri  $uri
+     *
      * @return HttpResponse
      */
     public function get(Uri $uri): HttpResponse
     {
         return $this->sendRequest($uri, [
-            CURLOPT_RETURNTRANSFER  => true,
+            CURLOPT_RETURNTRANSFER => true,
         ]);
     }
 
     /**
      * @param Uri $uri
      * @param string $postFields
+     *
      * @return HttpResponse
      */
     public function post(Uri $uri, string $postFields): HttpResponse
     {
         return $this->sendRequest($uri, [
-            CURLOPT_RETURNTRANSFER  => true,
-            CURLOPT_POST            => true,
-            CURLOPT_POSTFIELDS      => $postFields,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_POST => true,
+            CURLOPT_POSTFIELDS => $postFields,
         ]);
     }
 
     /**
      * @param Uri $uri
      * @param string $postFields
+     *
      * @return HttpResponse
      */
     public function put(Uri $uri, string $postFields): HttpResponse
     {
         return $this->sendRequest($uri, [
-            CURLOPT_RETURNTRANSFER  => true,
-            CURLOPT_CUSTOMREQUEST   => 'PUT',
-            CURLOPT_POSTFIELDS      => $postFields,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_CUSTOMREQUEST => 'PUT',
+            CURLOPT_POSTFIELDS => $postFields,
         ]);
     }
 
     /**
      * @param Uri $uri
      * @param string $postFields
+     *
      * @return HttpResponse
      */
     public function patch(Uri $uri, string $postFields): HttpResponse
     {
         return $this->sendRequest($uri, [
-            CURLOPT_RETURNTRANSFER  => true,
-            CURLOPT_CUSTOMREQUEST   => 'PATCH',
-            CURLOPT_POSTFIELDS      => $postFields,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_CUSTOMREQUEST => 'PATCH',
+            CURLOPT_POSTFIELDS => $postFields,
         ]);
     }
 
     /**
      * @param Uri $uri
+     *
      * @return HttpResponse
      */
     public function delete(Uri $uri): HttpResponse
     {
         return $this->sendRequest($uri, [
-            CURLOPT_RETURNTRANSFER  => true,
-            CURLOPT_CUSTOMREQUEST   => 'DELETE',
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_CUSTOMREQUEST => 'DELETE',
         ]);
     }
 
     /**
      * @param  Uri  $uri
      * @param  array  $options
+     *
      * @return HttpResponse
      */
     private function sendRequest(Uri $uri, array $options): HttpResponse
@@ -110,16 +118,44 @@ class HttpClient implements HttpClientInterface
             $error = curl_error($curl);
             curl_close($curl);
 
-            if ($error) {
-                $httpResponse = new HttpResponse();
-                $httpResponse->setErrorMessage($error);
-            } else {
-                $httpResponse = new HttpResponse($response);
-            }
+            $httpResponse = $this->prepareResponse($response, $error);
         } catch (Exception $exception) {
-            $httpResponse = new HttpResponse();
-            $httpResponse->setErrorMessage($exception->getMessage());
+            $httpResponse = $this->prepareResponseFromException($exception);
         }
+
+        return $httpResponse;
+    }
+
+    /**
+     * @param string $response
+     * @param string $error
+     *
+     * @return HttpResponse
+     */
+    private function prepareResponse(
+        string $response,
+        string $error
+    ): HttpResponse {
+        if ($error) {
+            $httpResponse = new HttpResponse();
+            $httpResponse->setErrorMessage($error);
+        } else {
+            $httpResponse = new HttpResponse($response);
+        }
+
+        return $httpResponse;
+    }
+
+    /**
+     * @param Exception $exception
+     *
+     * @return HttpResponse
+     */
+    private function prepareResponseFromException(
+        Exception $exception
+    ): HttpResponse {
+        $httpResponse = new HttpResponse();
+        $httpResponse->setErrorMessage($exception->getMessage());
 
         return $httpResponse;
     }

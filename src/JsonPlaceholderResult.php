@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Plelonek\JsonPlaceholder;
 
 use Plelonek\JsonPlaceholder\Http\HttpResponse;
@@ -52,21 +54,6 @@ abstract class JsonPlaceholderResult
     }
 
     /**
-     * @return void
-     */
-    abstract protected function setResult(): void;
-
-    /**
-     * @return void
-     */
-    protected function setError(): void
-    {
-        $this->status = self::STATUS_ERROR;
-
-        $this->errorMessage = $this->httpResponse->getErrorMessage();
-    }
-
-    /**
      * @return string|null
      */
     public function getError(): ?string
@@ -88,5 +75,20 @@ abstract class JsonPlaceholderResult
     public function isSuccess(): bool
     {
         return $this->status === self::STATUS_SUCCESS;
+    }
+
+    /**
+     * @return void
+     */
+    abstract protected function setResult(): void;
+
+    /**
+     * @return void
+     */
+    protected function setError(): void
+    {
+        $this->status = self::STATUS_ERROR;
+
+        $this->errorMessage = $this->httpResponse->getErrorMessage();
     }
 }

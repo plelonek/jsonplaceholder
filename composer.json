@@ -1,6 +1,8 @@
 {
     "name": "plelonek/jsonplaceholder",
     "description": "JSONPlaceholder Client",
+    "keywords": ["php", "client", "jsonplaceholder"],
+    "license": "MIT",
     "authors": [
         {
             "name": "Patryk Lelonek",
@@ -12,9 +14,18 @@
         "ext-curl": "*",
         "ext-json": "*"
     },
+    "require-dev": {
+        "phpunit/phpunit": "8.3.*",
+        "nunomaduro/phpinsights": "^1.9"
+    },
     "autoload": {
         "psr-4": {
             "Plelonek\\JsonPlaceholder\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Plelonek\\JsonPlaceholder\\Tests\\": "tests"
         }
     }
 }
